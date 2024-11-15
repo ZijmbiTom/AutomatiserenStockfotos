@@ -6,9 +6,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.service import Service
-from webdriver_manager.firefox import GeckoDriverManager
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 from urllib.parse import urljoin
 from urllib.request import urlretrieve
 
@@ -27,15 +27,17 @@ if st.button("Download Afbeeldingen"):
     if url and url.startswith(('http://', 'https://')):
         st.write("Downloadproces gestart...")
 
-        # Instellen van Firefox WebDriver in headless mode
-        options = Options()
-        options.add_argument("--headless")  # Voer Firefox uit in headless mode voor serveromgevingen
+        # Configureer Chrome WebDriver in headless mode
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
         driver = None  # Initialiseer driver buiten try-except blok
 
         # Selenium WebDriver instellen met foutafhandeling
         try:
-            service = Service(GeckoDriverManager().install())
-            driver = webdriver.Firefox(service=service, options=options)
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=chrome_options)
             driver.get(url)
             
             # Wacht tot de afbeeldingen geladen zijn
