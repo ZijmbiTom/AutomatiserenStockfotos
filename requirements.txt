@@ -2,4 +2,3 @@ streamlit
 beautifulsoup4
 selenium
 requests
-webdriver-manager

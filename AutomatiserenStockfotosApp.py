@@ -7,7 +7,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from urllib.parse import urljoin
 from urllib.request import urlretrieve
@@ -27,16 +26,18 @@ if st.button("Download Afbeeldingen"):
     if url and url.startswith(('http://', 'https://')):
         st.write("Downloadproces gestart...")
 
-        # Configureer Chrome WebDriver in headless mode
+        # Configureer Chrome WebDriver in headless mode voor gebruik met Chromium
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        driver = None  # Initialiseer driver buiten try-except blok
+        chrome_options.add_argument("--headless")  # Run in headless mode
+        chrome_options.add_argument("--no-sandbox")  # Verplicht voor sommige cloudomgevingen
+        chrome_options.add_argument("--disable-dev-shm-usage")  # Vermijd geheugenproblemen
+        chrome_options.binary_location = "/usr/bin/chromium-browser"  # Specificeer de locatie van Chromium
 
-        # Selenium WebDriver instellen met foutafhandeling
+        # Initialiseer driver en foutafhandeling
+        driver = None
         try:
-            service = Service(ChromeDriverManager().install())
+            # Specificeer de locatie van ChromeDriver
+            service = Service("/usr/bin/chromedriver")
             driver = webdriver.Chrome(service=service, options=chrome_options)
             driver.get(url)
             
