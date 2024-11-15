@@ -1,4 +1,3 @@
-# imports and setup code remain the same
 import streamlit as st
 import os
 import time
@@ -7,6 +6,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.firefox.options import Options
 from urllib.parse import urljoin
 from urllib.request import urlretrieve
 
@@ -25,10 +26,14 @@ if st.button("Download Afbeeldingen"):
     if url and url.startswith(('http://', 'https://')):
         st.write("Downloadproces gestart...")
 
+        # Instellen van Firefox WebDriver in headless mode
+        options = Options()
+        options.add_argument("--headless")  # Voer Firefox uit in headless mode voor serveromgevingen
+        driver = None  # Initialiseer driver buiten try-except blok
+
         # Selenium WebDriver instellen met foutafhandeling
-        driver = None  # Voeg deze regel toe om driver buiten de try-except beschikbaar te maken
         try:
-            driver = webdriver.Chrome()
+            driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=options)
             driver.get(url)
             
             # Wacht tot de afbeeldingen geladen zijn
@@ -43,8 +48,8 @@ if st.button("Download Afbeeldingen"):
             img_tags = soup.find_all('img', class_='image')
             st.write(f"Gevonden afbeeldingen: {len(img_tags)}")
 
-            # Beperk het aantal afbeeldingen tot bijvoorbeeld 10
-            max_images = 10
+            # Beperk het aantal afbeeldingen tot bijvoorbeeld 30
+            max_images = 30
             img_tags = img_tags[:max_images]
             progress_bar = st.progress(0)
 
@@ -69,7 +74,10 @@ if st.button("Download Afbeeldingen"):
             st.error(f"Er is een probleem opgetreden: {e}")
         
         finally:
+            # Zorg ervoor dat de driver altijd wordt afgesloten
             if driver:
-                driver.quit()  # Dit zorgt ervoor dat driver.quit() alleen wordt aangeroepen als driver bestaat
+                driver.quit()
+
     else:
         st.warning("Voer een geldige URL in die begint met 'http://' of 'https://'.")
+
