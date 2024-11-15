@@ -1,3 +1,4 @@
+# imports and setup code remain the same
 import streamlit as st
 import os
 import time
@@ -25,6 +26,7 @@ if st.button("Download Afbeeldingen"):
         st.write("Downloadproces gestart...")
 
         # Selenium WebDriver instellen met foutafhandeling
+        driver = None  # Voeg deze regel toe om driver buiten de try-except beschikbaar te maken
         try:
             driver = webdriver.Chrome()
             driver.get(url)
@@ -36,14 +38,13 @@ if st.button("Download Afbeeldingen"):
 
             # Parse de HTML met BeautifulSoup
             soup = BeautifulSoup(driver.page_source, 'html.parser')
-            driver.quit()
             
             # Vind <img> tags
             img_tags = soup.find_all('img', class_='image')
             st.write(f"Gevonden afbeeldingen: {len(img_tags)}")
 
             # Beperk het aantal afbeeldingen tot bijvoorbeeld 10
-            max_images = 30
+            max_images = 10
             img_tags = img_tags[:max_images]
             progress_bar = st.progress(0)
 
@@ -66,6 +67,9 @@ if st.button("Download Afbeeldingen"):
 
         except Exception as e:
             st.error(f"Er is een probleem opgetreden: {e}")
-            driver.quit()
+        
+        finally:
+            if driver:
+                driver.quit()  # Dit zorgt ervoor dat driver.quit() alleen wordt aangeroepen als driver bestaat
     else:
         st.warning("Voer een geldige URL in die begint met 'http://' of 'https://'.")
