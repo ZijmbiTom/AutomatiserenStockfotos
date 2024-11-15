@@ -1,13 +1,13 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 import streamlit as st
 import os
 import time
 from bs4 import BeautifulSoup
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
 from urllib.parse import urljoin
 from urllib.request import urlretrieve
 
@@ -26,18 +26,18 @@ if st.button("Download Afbeeldingen"):
     if url and url.startswith(('http://', 'https://')):
         st.write("Downloadproces gestart...")
 
-        # Configureer Chrome WebDriver in headless mode voor gebruik met Chromium
+        # Configureer Google Chrome in headless mode
         chrome_options = Options()
-        chrome_options.add_argument("--headless")  # Run in headless mode
-        chrome_options.add_argument("--no-sandbox")  # Verplicht voor sommige cloudomgevingen
-        chrome_options.add_argument("--disable-dev-shm-usage")  # Vermijd geheugenproblemen
-        chrome_options.binary_location = "/usr/bin/chromium-browser"  # Specificeer de locatie van Chromium
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.binary_location = "/usr/bin/google-chrome-stable"  # Google Chrome locatie
 
         # Initialiseer driver en foutafhandeling
         driver = None
         try:
             # Specificeer de locatie van ChromeDriver
-            service = Service("/usr/bin/chromedriver")
+            service = Service("/usr/local/bin/chromedriver")
             driver = webdriver.Chrome(service=service, options=chrome_options)
             driver.get(url)
             
