@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.firefox.service import Service
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.firefox.options import Options
 from urllib.parse import urljoin
@@ -33,7 +34,8 @@ if st.button("Download Afbeeldingen"):
 
         # Selenium WebDriver instellen met foutafhandeling
         try:
-            driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=options)
+            service = Service(GeckoDriverManager().install())
+            driver = webdriver.Firefox(service=service, options=options)
             driver.get(url)
             
             # Wacht tot de afbeeldingen geladen zijn
@@ -80,4 +82,3 @@ if st.button("Download Afbeeldingen"):
 
     else:
         st.warning("Voer een geldige URL in die begint met 'http://' of 'https://'.")
-
